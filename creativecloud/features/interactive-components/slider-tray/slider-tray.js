@@ -250,7 +250,8 @@ function continueToPs(media, layer, imgObj) {
       // }
       const { openInPsWeb } = await import('../../../deps/continueToPs/openInPsWeb.js');
       // console.log(openInPsWeb);
-      openInPsWeb(psurls[3], imgObj.fileName, [{ filename: imgObj.fileName, imageData: imgObj.imgSrc }], actionJSONData);
+      const imageData = await (await fetch(imgObj.imgSrc)).blob(); 
+      openInPsWeb(psurls[3], imgObj.fileName, [{ filename: imgObj.fileName, imageData }], actionJSONData);
     });
   });
 }
