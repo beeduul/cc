@@ -235,7 +235,7 @@ function continueToPs(media, layer, imgObj) {
       const psurls = [
         'https://photoshop.adobe.com',
         'https://dev.photoshop.adobe.com',
-        'https://pr.photoshop.adobe.com/?PR=47381',
+        'https://pr.photoshop.adobe.com/?PR=48898',
         'https://localhost.corp.adobe.com:3000',
       ]
 
