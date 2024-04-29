@@ -181,14 +181,33 @@ function uploadImage(media, layer, imgObj) {
     btn.addEventListener('cancel', () => {
       cancelAnalytics(btn);
     });
-    btn.addEventListener('change', (event) => {
+    btn.addEventListener('change', async (event) => {
+
+      const { MaskProcessor } = await import('../../../deps/continueToPs/maskProcessor-8137bf08.js');
+      console.log(MaskProcessor);
+
+      const { AperitifStrategy } = await import('../../../deps/continueToPs/aperitifStrategy-b18682e9.js');
+      console.log(AperitifStrategy);
+
+      await AperitifStrategy.init(
+        'https://image-stage.adobe.io/utils/aperitif',
+        '6LecjOQZAAAAAO2g37NFPwnIPA6URMXdAzBFZTpZ',
+        'nurture-acom-first-touch'
+      );
+
       const image = media.querySelector('picture > img');
       const file = event.target.files[0];
       if (file) {
         const sources = image.querySelectorAll('source');
         sources.forEach((source) => source.remove());
         imgObj.fileName = file.name;
-        const imageUrl = URL.createObjectURL(file);
+
+        const strategy = new AperitifStrategy();
+        const maskProcessor = new MaskProcessor(strategy, file);
+        const maskBlob = await maskProcessor.mask();
+        console.log(maskBlob);
+
+        const imageUrl = URL.createObjectURL(maskBlob);
         image.src = imageUrl;
         imgObj.imgSrc = imageUrl;
         analyticsBtn.innerHTML = 'Upload Button';
@@ -206,6 +225,7 @@ function uploadImage(media, layer, imgObj) {
 function continueToPs(media, layer, imgObj) {
   layer.querySelectorAll('.continueButton').forEach((btn) => {
     btn.addEventListener('click', async (e) => {
+
       const actionJSONData = [
         {
           _obj: 'make',
@@ -248,7 +268,7 @@ function continueToPs(media, layer, imgObj) {
       //   },
       //   actionJSON: actionJSONData,
       // }
-      const { openInPsWeb } = await import('../../../deps/continueToPs/openInPsWeb.js');
+      const { openInPsWeb } = await import('../../../deps/continueToPs/OpenInPsWeb-f0ef1c38.js');
       // console.log(openInPsWeb);
       const imageData = await (await fetch(imgObj.imgSrc)).blob(); 
       openInPsWeb(psurls[3], imgObj.fileName, [{ filename: imgObj.fileName, imageData }], actionJSONData);
